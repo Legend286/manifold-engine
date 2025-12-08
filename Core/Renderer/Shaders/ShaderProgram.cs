@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using Vector2 = OpenTK.Mathematics.Vector2;
 using Vector3 = OpenTK.Mathematics.Vector3;
@@ -61,7 +60,7 @@ public sealed class ShaderProgram : IDisposable
     public void Set(string name, Vector4 value)
         => GL.Uniform4f(GetUniformLocation(name),1, value);
 
-    public void Set(string name, Matrix4x4 value)
+    public void Set(string name, Matrix4 value)
         => GL.UniformMatrix4f(GetUniformLocation(name),1, false, ref value);
 
     #endregion

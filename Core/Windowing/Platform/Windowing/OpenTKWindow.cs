@@ -19,9 +19,9 @@ public class OpenTKWindow : GameWindow, IWindow {
         ClientSize = new Vector2i(properties.Width, properties.Height),
         Vsync = properties.VSync ? VSyncMode.On : VSyncMode.Off,
         APIVersion = new Version(4, 6),
-
     }) {
         SetVSync(properties.VSync);
+        UpdateFrequency = 120;
     }
 
     public void SetEventCallback(Action<Event> callback) {
@@ -50,7 +50,7 @@ public class OpenTKWindow : GameWindow, IWindow {
     }
     
     public void OnUpdate() {
-        ProcessEvents(1);
+        ProcessEvents(0);
         SwapBuffers();
     }
     

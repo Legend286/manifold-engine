@@ -1,8 +1,6 @@
-﻿using ImGuiNET;
-using Manifold.Core.Input;
+﻿using Manifold.Core.InputSystem;
 using Manifold.Runtime;
 using Manifold.Sandbox.Layers;
-using OpenTK.Graphics.Vulkan;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Sandbox;

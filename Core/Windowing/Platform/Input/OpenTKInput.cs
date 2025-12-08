@@ -1,4 +1,4 @@
-﻿using Manifold.Core.Input;
+﻿using Manifold.Core.InputSystem;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -14,6 +14,10 @@ public class OpenTKInput : InputImplementation {
     }
     protected internal override bool IsKeyDownImpl(Keys key) {
         return _window.KeyboardState.IsKeyDown(key);
+    }
+
+    protected internal override bool IsKeyReleasedImpl(Keys key) {
+        return _window.KeyboardState.IsKeyReleased(key);
     }
 
     protected internal override bool IsKeyPressedImpl(Keys key) {

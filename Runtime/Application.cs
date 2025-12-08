@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Manifold.Core.Events;
-using Manifold.Core.Input;
+using Manifold.Core.InputSystem;
 using Manifold.Core.Layers;
 using Manifold.Core.Renderer;
 using Manifold.Core.Windowing;
@@ -65,19 +65,24 @@ public abstract class Application : IDisposable {
         }
     }
     public void Run() {
+
         Stopwatch timer = new Stopwatch();
         timer.Start();
         TimeSpan lastTime = timer.Elapsed;
         
         while (_running) {
+            _window.OnUpdate();
             TimeSpan currentTime = timer.Elapsed;
             float deltaTime = (float)(currentTime - lastTime).TotalSeconds;
             lastTime = currentTime;
+
+// Clamp dt so first-frame jitter cannot occur
+            deltaTime = Math.Clamp(deltaTime, 0.0f, 0.05f);
             
             OnUpdate(deltaTime);
             OnRender();
             
-            _window.OnUpdate();
+
         }
     }
 
