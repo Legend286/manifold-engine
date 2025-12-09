@@ -81,9 +81,9 @@ public abstract class Application : IDisposable {
             
             OnUpdate(deltaTime);
             OnRender();
-            
-
         }
+
+        Close();
     }
 
     protected virtual void OnUpdate(float deltaTime) {
@@ -94,7 +94,7 @@ public abstract class Application : IDisposable {
     }
 
     protected virtual void OnRender() {
-        RenderCommand.SetClearColor(Color4.Cornflowerblue);
+        RenderCommand.SetClearColor(Color4.Black);
         RenderCommand.Clear();
 
         foreach (var layer in _layerStack) {
@@ -112,7 +112,7 @@ public abstract class Application : IDisposable {
     }
 
     private bool OnWindowResize(WindowResizeEvent e) {
-        Console.WriteLine($"Resized: {e.Width}x{e.Height}");
+        Console.WriteLine($"Resized {this.GetType().Name} to: {e.Width} x {e.Height}");
         
         return false;
     }

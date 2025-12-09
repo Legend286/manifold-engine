@@ -18,7 +18,7 @@ public class OpenTKWindow : GameWindow, IWindow {
         Title = properties.Title,
         ClientSize = new Vector2i(properties.Width, properties.Height),
         Vsync = properties.VSync ? VSyncMode.On : VSyncMode.Off,
-        APIVersion = new Version(4, 6),
+        APIVersion = new Version(4, 1),
     }) {
         SetVSync(properties.VSync);
         UpdateFrequency = 120;
