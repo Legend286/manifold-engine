@@ -1,7 +1,8 @@
-﻿#version 410 core
+#version 410 core
 
 layout(location = 0) in vec4 vColor;
 layout(location = 0) out vec4 color;
+
 
 void main() {
     color = vec4(vColor);

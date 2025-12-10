@@ -27,8 +27,14 @@ public class ImGuiLayer : Layer {
         _renderer.Update(Application.Instance.OpenTKWindow, deltaTime);
         
         ImGui.Begin("WOW");
-        ImGui.Checkbox("Show triangle layer", ref SandboxApp.Instance.LayerStack.First().IsVisible);
+        bool visible = Application.Instance.LayerStack.First().IsVisible;
+
+        if (ImGui.Checkbox("Show triangle layer", ref visible)) {
+            Application.Instance.LayerStack.First().IsVisible = visible;
+        }
         ImGui.End();
+        
+        
     }
 
     public override void OnEvent(Event e) {

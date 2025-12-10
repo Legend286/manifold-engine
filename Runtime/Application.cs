@@ -3,6 +3,7 @@ using Manifold.Core.Events;
 using Manifold.Core.InputSystem;
 using Manifold.Core.Layers;
 using Manifold.Core.Renderer;
+using Manifold.Core.SceneSystem;
 using Manifold.Core.Windowing;
 using Manifold.Core.Windowing.Platform;
 using Manifold.Core.Windowing.Platform.Input;
@@ -16,6 +17,8 @@ namespace Manifold.Runtime;
 public abstract class Application : IDisposable {
     private IWindow _window;
     private bool _running = true;
+    private Camera _mainCamera;
+    public Camera MainCamera {get => _mainCamera; set => _mainCamera = value; }
     
     public static Application Instance { get; private set; }
 
@@ -121,7 +124,10 @@ public abstract class Application : IDisposable {
         Console.WriteLine($"Closing {this.GetType().Name}.");
         _running = false;
     }
-    
+
+    public void SetCamera(Camera camera) {
+        _mainCamera = camera;
+    }
     public void Dispose() {
         
     }

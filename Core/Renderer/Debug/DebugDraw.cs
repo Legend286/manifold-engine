@@ -244,18 +244,17 @@ public static class DebugDraw {
         DrawCircle(center, Vector3.UnitY, Vector3.UnitZ, radius, color, segments);
         DrawCircle(center, Vector3.UnitZ, Vector3.UnitX, radius, color, segments);
     }
-    
+
     public static void Arrow(
         Vector3 start,
         Vector3 end,
         Vector4 color,
         float headLengthRatio = 0.2f,
         float headRadiusRatio = 0.08f,
-        int segments = 8)
-    {
+        int segments = 8) {
         Vector3 dir = end - start;
         float length = dir.Length;
-
+        
         if (length < 0.0001f)
             return;
 
@@ -269,6 +268,7 @@ public static class DebugDraw {
 
         // Build stable basis
         Vector3 tangent = Vector3.Cross(dir, Vector3.UnitZ);
+
         if (tangent.LengthSquared < 0.0001f)
             tangent = Vector3.Cross(dir, Vector3.UnitX);
         tangent.Normalize();
@@ -283,9 +283,10 @@ public static class DebugDraw {
 
         // Connect cone edges
         float angleStep = MathF.Tau / segments;
-        for (int i = 0; i < segments; i++)
-        {
+
+        for (int i = 0; i < segments; i++) {
             float a = i * angleStep;
+
             Vector3 offset =
                 (tangent * MathF.Cos(a) +
                  bitangent * MathF.Sin(a)) * headRadius;
@@ -294,7 +295,4 @@ public static class DebugDraw {
             Line(baseCenter + offset, shaftEnd, color);
         }
     }
-
-
-
 }

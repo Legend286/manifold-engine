@@ -1,20 +1,23 @@
-﻿using Manifold.Core.Layers;
+﻿using System.Net.Mime;
+using Manifold.Core.Layers;
+using Manifold.Core.Renderer;
 using Manifold.Core.Renderer.Buffers;
+using Manifold.Core.Renderer.MaterialSystem;
 using Manifold.Core.Renderer.Shaders;
 using Manifold.Core.SceneSystem;
 using Manifold.Runtime;
 using OpenTK.Graphics.OpenGL.Compatibility;
+using OpenTK.Windowing.Common;
 
 namespace Manifold.Sandbox.Layers;
 
 public class TestLayer : Layer {
     private VertexArray _vertexArray;
     private VertexBuffer _vertexBuffer;
-    private VertexBuffer _colorBuffer;
     private IndexBuffer _indexBuffer;
     private ShaderProgram _shader;
-    private Camera _camera;
-    private FlyCameraController _controller;
+    private RenderTarget _target;
+    public RenderTarget Target => _target;
 
     private int _shaderProgram;
 
@@ -22,18 +25,36 @@ public class TestLayer : Layer {
         
     }
 
-    public override void OnAttach() {
-        _vertexArray = new VertexArray();
+    public override void OnDisable() {
+        base.OnDisable();
+        Target.Bind();
+        RenderCommand.Clear();
+        Target.Unbind();
+    }
 
-        
-        _camera = new Camera();
-        _controller = new FlyCameraController(_camera);
-        
-        float[] vertices = {
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+    public override void OnAttach() {
+        Application.Instance.OpenTKWindow.Resize += (args) => _target.Resize(args.Width, args.Height);
+        RenderTargetSpec spec = new RenderTargetSpec();
+        spec.Width = Application.Instance.Width;
+        spec.Height = Application.Instance.Height;
+        spec.ColorAttachments = new[] { new RenderTargetAttachmentSpec() { Format = RenderTargetFormat.RGBA8 } };
+        spec.HasDepth = true;
+        _target = new RenderTarget(spec);
+        _vertexArray = new VertexArray();
+        float[] vertices =
+        {
+            // Positions              // Colors
+            -0.5f, -0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 0
+            0.5f, -0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 1
+            0.5f,  0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 2
+            -0.5f,  0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 3
+
+            -0.5f, -0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 4
+            0.5f, -0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 5
+            0.5f,  0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 6
+            -0.5f,  0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1  // 7
         };
+
         
         _vertexBuffer = new VertexBuffer(vertices);
         
@@ -46,27 +67,55 @@ public class TestLayer : Layer {
 
         _vertexArray.AddVertexBuffer(_vertexBuffer);
 
-        uint[] indices = { 0, 1, 2 };
+        uint[] indices =
+        {
+            // Back (-Z)
+            0, 2, 1,
+            0, 3, 2,
+
+            // Front (+Z)
+            4, 5, 6,
+            4, 6, 7,
+
+            // Left (-X)
+            0, 7, 3,
+            0, 4, 7,
+
+            // Right (+X)
+            1, 2, 6,
+            1, 6, 5,
+
+            // Bottom (-Y)
+            0, 1, 5,
+            0, 5, 4,
+
+            // Top (+Y)
+            3, 6, 2,
+            3, 7, 6
+        };
+
         _indexBuffer = new IndexBuffer(indices);
 
         _vertexArray.SetIndexBuffer(_indexBuffer);
         
-        _shader = ShaderManager.Load("debug");
+        _shader = ShaderManager.Load("DebugModel");
     }
-
-    public override void OnUpdate(float deltaTime) {
-        _controller.Update(deltaTime);
-    }
+    
     public override void OnRender() {
+        GL.Enable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.CullFace);
+        GL.Disable(EnableCap.Blend);
+        GL.DepthMask(true);
         
+        _target.Bind(true);
         _shader.Bind();
-        _shader.Set("u_View", _camera.GetView());
-        _shader.Set("u_Projection", _camera.GetProjection((float)Application.Instance.Width / Application.Instance.Height));
+        _shader.Set("u_View", Application.Instance.MainCamera.GetView());
+        _shader.Set("u_Projection", Application.Instance.MainCamera.GetProjection((float)Application.Instance.Width / Application.Instance.Height));
         
         _vertexArray.Bind();
 
         GL.DrawElements(PrimitiveType.Triangles, _vertexArray.GetIndexBuffer.Count, DrawElementsType.UnsignedInt, 0);
-        
+        _target.Unbind();
     }
     
 }

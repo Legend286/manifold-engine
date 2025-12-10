@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Manifold.Runtime;
+using OpenTK.Mathematics;
 
 namespace Manifold.Core.SceneSystem;
 
@@ -7,6 +8,9 @@ public class Camera {
     public float Near = 0.1f;
     public float Far = 1000f;
 
+    public Camera() {
+        Application.Instance.SetCamera(this);
+    }
     public Transform Transform { get; set; } = new Transform();
 
     public Matrix4 GetProjection(float aspectRatio) {

@@ -1,6 +1,10 @@
-﻿using Manifold.Core.InputSystem;
+﻿using ImGuiNET;
+using Manifold.Core.InputSystem;
+using Manifold.Core.Layers;
 using Manifold.Core.Renderer.Debug;
 using Manifold.Core.Renderer.Debug.Layers;
+using Manifold.Core.Renderer.Layers;
+using Manifold.Core.SceneSystem;
 using Manifold.Runtime;
 using Manifold.Sandbox.Layers;
 using OpenTK.Graphics.OpenGLES2;
@@ -10,13 +14,18 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 namespace Sandbox;
 
 public class SandboxApp : Application {
-    
+    private TestLayer TL;
+    private Camera _camera;
+    private FlyCameraController _controller;
     public SandboxApp(string title) : base(title) {
-        PushLayer(new TestLayer());
-        PushLayer(new DebugDrawLayer());
-
-        var imguiLayer = new ImGuiLayer();
-        PushOverlay(imguiLayer);
+        TL = new TestLayer();
+        _camera = new Camera();
+        _controller = new FlyCameraController(_camera);
+        PushLayer(TL);
+        PushLayer(new FullscreenBlitLayer(TL.Target));
+        PushLayer(new DebugDrawLayer(TL.Target));
+        
+        PushOverlay(new ImGuiLayer());
     }
     protected override void OnUpdate(float deltaTime) {
         base.OnUpdate(deltaTime);
@@ -26,13 +35,11 @@ public class SandboxApp : Application {
         }
         
         if (Input.IsKeyPressed(Keys.F1)) {
-            LayerStack.Last().IsVisible = !LayerStack.Last().IsVisible;
+            LayerStack.First().IsVisible = !LayerStack.First().IsVisible;
         }
-    }
-    
-    protected override void OnRender() {
-        base.OnRender();
-
+        
+        _controller.Update(deltaTime);
+        
         GL.LineWidth(8.0f);
         DebugDraw.Line(new Vector3(1,0,0), new Vector3(2,0,0), new Vector4(1, 0, 0, 1));
         
@@ -45,6 +52,13 @@ public class SandboxApp : Application {
         DebugDraw.Capsule(new Vector3(1,0,3), new Vector3(1,1,3), 0.5f, new Vector4(1,0,1,1));
 
         DebugDraw.Arrow(new Vector3(2, 0, 2), new Vector3(3, 1, -1), new Vector4(1, 1, 0, 1));
+    }
+    
+    protected override void OnRender() {
+        ImGui.Begin("DEBUG TEST");
+        ImGui.Image(TL.Target.GetColorTexture(), new System.Numerics.Vector2(512, 512 / ((float)Application.Instance.Width / Application.Instance.Height)), new System.Numerics.Vector2(0,1),new System.Numerics.Vector2(1,0));
+        ImGui.End();
+        base.OnRender();
     }
     
 }
