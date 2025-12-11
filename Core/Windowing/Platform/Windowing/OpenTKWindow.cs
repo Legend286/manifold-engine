@@ -51,7 +51,6 @@ public class OpenTKWindow : GameWindow, IWindow {
     
     public void OnUpdate() {
         ProcessEvents(0);
-        SwapBuffers();
     }
     
 }

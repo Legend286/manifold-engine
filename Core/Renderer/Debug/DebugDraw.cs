@@ -1,4 +1,5 @@
 using Manifold.Core.Renderer.Buffers;
+using Manifold.Core.Renderer.Maths;
 using OpenTK.Mathematics;
 
 namespace Manifold.Core.Renderer.Debug;
@@ -18,10 +19,14 @@ public static class DebugDraw {
     public static void Clear() => Vertices.Clear();
 
     public static void Line(Vector3 a, Vector3 b, Vector4 color) {
-        Vertices.Add(new DebugVertex { Position = a, Color = color });
-        Vertices.Add(new DebugVertex { Position = b, Color = color });
+        Vertices.Add(new DebugVertex { Position = a, Color = new Vector4(color.Xyz, 0.5f) });
+        Vertices.Add(new DebugVertex { Position = b, Color = new Vector4(color.Xyz, 0.5f) });
     }
-    
+
+    public static void AABB(AABB bounds, Vector4 color) {
+        AABB(bounds.Min, bounds.Max, color);
+    }
+
     public static void AABB(Vector3 min, Vector3 max, Vector4 color) {
         Vector3[] c =
         {
@@ -295,4 +300,57 @@ public static class DebugDraw {
             Line(baseCenter + offset, shaftEnd, color);
         }
     }
+    
+    public static void Grid(
+        int halfSize = 10,
+        float cellSize = 1.0f,
+        int majorLineEvery = 5,
+        float y = 0.0f)
+    {
+        Vector4 minorColor = new Vector4(0.25f, 0.25f, 0.25f, 0.5f);
+        Vector4 majorColor = new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
+
+        Vector4 xAxis = new Vector4(1, 0, 0, 0.5f);
+        Vector4 yAxis = new Vector4(0, 1, 0, 0.5f);
+        Vector4 zAxis = new Vector4(0, 0, 1, 0.5f);
+
+        float extent = halfSize * cellSize;
+
+        for (int i = -halfSize; i <= halfSize; i++)
+        {
+            float pos = i * cellSize;
+
+            bool isMajor = (i % majorLineEvery) == 0;
+
+            Vector4 color = isMajor ? majorColor : minorColor;
+
+            // Z lines (parallel to X)
+            Vector3 zStart = new Vector3(-extent, y, pos);
+            Vector3 zEnd   = new Vector3( extent, y, pos);
+            DebugDraw.Line(zStart, zEnd, color);
+
+            // X lines (parallel to Z)
+            Vector3 xStart = new Vector3(pos, y, -extent);
+            Vector3 xEnd   = new Vector3(pos, y,  extent);
+            DebugDraw.Line(xStart, xEnd, color);
+        }
+
+        // Axis lines (draw last so they’re clearest)
+        DebugDraw.Line(
+            new Vector3(-extent, y, 0),
+            new Vector3( extent, y, 0),
+            xAxis);
+
+        DebugDraw.Line(
+            new Vector3(0, y, -extent),
+            new Vector3(0, y,  extent),
+            zAxis);
+
+        // Optional Y axis
+        DebugDraw.Line(
+            new Vector3(0, -extent, 0),
+            new Vector3(0,  extent, 0),
+            yAxis);
+    }
+
 }

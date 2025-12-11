@@ -40,63 +40,6 @@ public class TestLayer : Layer {
         spec.ColorAttachments = new[] { new RenderTargetAttachmentSpec() { Format = RenderTargetFormat.RGBA8 } };
         spec.HasDepth = true;
         _target = new RenderTarget(spec);
-        _vertexArray = new VertexArray();
-        float[] vertices =
-        {
-            // Positions              // Colors
-            -0.5f, -0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 0
-            0.5f, -0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 1
-            0.5f,  0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 2
-            -0.5f,  0.5f, -0.5f,      0.5f, 0.5f, 0.5f, 1, // 3
-
-            -0.5f, -0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 4
-            0.5f, -0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 5
-            0.5f,  0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1, // 6
-            -0.5f,  0.5f,  0.5f,      0.5f, 0.5f, 0.5f, 1  // 7
-        };
-
-        
-        _vertexBuffer = new VertexBuffer(vertices);
-        
-
-        var layout = new BufferLayout(
-            new BufferElement(ShaderDataType.Float3, "a_Position"),
-            new BufferElement(ShaderDataType.Float4, "a_Color")
-        );
-        _vertexBuffer.SetLayout(layout);
-
-        _vertexArray.AddVertexBuffer(_vertexBuffer);
-
-        uint[] indices =
-        {
-            // Back (-Z)
-            0, 2, 1,
-            0, 3, 2,
-
-            // Front (+Z)
-            4, 5, 6,
-            4, 6, 7,
-
-            // Left (-X)
-            0, 7, 3,
-            0, 4, 7,
-
-            // Right (+X)
-            1, 2, 6,
-            1, 6, 5,
-
-            // Bottom (-Y)
-            0, 1, 5,
-            0, 5, 4,
-
-            // Top (+Y)
-            3, 6, 2,
-            3, 7, 6
-        };
-
-        _indexBuffer = new IndexBuffer(indices);
-
-        _vertexArray.SetIndexBuffer(_indexBuffer);
         
         _shader = ShaderManager.Load("DebugModel");
     }

@@ -7,6 +7,7 @@ using Manifold.Core.SceneSystem;
 using Manifold.Core.Windowing;
 using Manifold.Core.Windowing.Platform;
 using Manifold.Core.Windowing.Platform.Input;
+using Manifold.Internal;
 using OpenTK.Graphics.OpenGLES2;
 using OpenTK.Mathematics;
 using GL = OpenTK.Graphics.OpenGL.Compatibility.GL;
@@ -84,6 +85,8 @@ public abstract class Application : IDisposable {
             
             OnUpdate(deltaTime);
             OnRender();
+            
+            OpenTKWindow.SwapBuffers();
         }
 
         Close();

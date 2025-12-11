@@ -11,11 +11,12 @@ public class Camera {
     public Camera() {
         Application.Instance.SetCamera(this);
     }
+
     public Transform Transform { get; set; } = new Transform();
 
-    public Matrix4 GetProjection(float aspectRatio) {
+    public Matrix4 GetProjection(float aspectRatio, float fovExpand = 1.0f) {
         return Matrix4.CreatePerspectiveFieldOfView(
-            MathHelper.DegreesToRadians(Fov),
+            MathHelper.DegreesToRadians(Fov * fovExpand),
             aspectRatio,
             Near,
             Far
@@ -24,5 +25,13 @@ public class Camera {
 
     public Matrix4 GetView() {
         return Transform.GetViewMatrix();
+    }
+
+    public Matrix4 GetViewProjection() {
+        return GetView() * GetProjection((float)Application.Instance.Width / Application.Instance.Height);
+    }
+
+    public Matrix4 GetViewProjectionCulling(float padMul = 1.25f) {
+        return Matrix4.Transpose(GetView() * GetProjection((float)Application.Instance.Width / Application.Instance.Height, padMul));
     }
 }

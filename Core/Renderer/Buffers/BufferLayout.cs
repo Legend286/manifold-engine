@@ -60,26 +60,23 @@ public struct BufferElement {
     }
 }
 
-public class BufferLayout : IEnumerable<BufferElement>
-{
+public class BufferLayout : IEnumerable<BufferElement> {
     private readonly List<BufferElement> _elements;
+
     public int Stride { get; private set; }
 
-    public BufferLayout(params BufferElement[] elements)
-    {
+    public BufferLayout(params BufferElement[] elements) {
         _elements = new List<BufferElement>(elements);
         CalculateOffsetsAndStride();
     }
 
     public IReadOnlyList<BufferElement> Elements => _elements;
 
-    private void CalculateOffsetsAndStride()
-    {
+    private void CalculateOffsetsAndStride() {
         int offset = 0;
         Stride = 0;
 
-        for (int i = 0; i < _elements.Count; i++)
-        {
+        for (int i = 0; i < _elements.Count; i++) {
             var element = _elements[i];
             element.Offset = offset;
             _elements[i] = element;
@@ -90,6 +87,7 @@ public class BufferLayout : IEnumerable<BufferElement>
     }
 
     public IEnumerator<BufferElement> GetEnumerator() => _elements.GetEnumerator();
+
     IEnumerator IEnumerable.GetEnumerator() {
         return GetEnumerator();
     }

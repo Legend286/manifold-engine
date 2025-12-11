@@ -3,44 +3,38 @@ using OpenTK.Graphics.OpenGL.Compatibility;
 
 namespace Manifold.Core.Renderer.Buffers;
 
-public class VertexArray : IDisposable
-{
+public class VertexArray : IDisposable {
     private int _rendererID;
     private int _vertexBufferIndex = 0;
     private List<VertexBuffer> _vertexBuffers = new List<VertexBuffer>();
     private IndexBuffer _indexBuffer;
+    public int GetNextFreeAttribute() => _vertexBufferIndex;
 
-    public VertexArray()
-    {
+    public VertexArray() {
         _rendererID = GL.GenVertexArray();
     }
 
-    public void Bind()
-    {
+    public void Bind() {
         GL.BindVertexArray(_rendererID);
     }
 
-    public void Unbind()
-    {
+    public void Unbind() {
         GL.BindVertexArray(0);
     }
 
-    public void AddVertexBuffer(VertexBuffer vertexBuffer)
-    {
-        if (vertexBuffer.GetLayout().Elements.Count == 0)
-        {
+    public void AddVertexBuffer(VertexBuffer vertexBuffer) {
+        if (vertexBuffer.GetLayout().Elements.Count == 0) {
             throw new Exception("Vertex buffer has no layout.");
         }
+
 
         Bind();
         vertexBuffer.Bind();
 
         var layout = vertexBuffer.GetLayout();
 
-        foreach (var element in layout.Elements)
-        {
-            switch (element.Type)
-            {
+        foreach (var element in layout.Elements) {
+            switch (element.Type) {
                 // Matrices must be split into multiple Vec4 attributes
                 case ShaderDataType.Mat3:
                 case ShaderDataType.Mat4:
@@ -50,9 +44,9 @@ public class VertexArray : IDisposable
                     int sizeVec4 = 4; // Each attribute is a vec4
                     int strideVec4 = sizeVec4 * 4; // 16 bytes per row
 
-                    for (int i = 0; i < countVec4; i++)
-                    {
+                    for (int i = 0; i < countVec4; i++) {
                         GL.EnableVertexAttribArray((uint)_vertexBufferIndex);
+
                         GL.VertexAttribPointer(
                             (uint)_vertexBufferIndex,
                             sizeVec4,
@@ -65,9 +59,11 @@ public class VertexArray : IDisposable
                         // GL.VertexAttribDivisor(_vertexBufferIndex, 1); 
                         _vertexBufferIndex++;
                     }
+
+
                     break;
                 }
-                
+
                 // Integers must use IPointer to avoid Float conversion
                 case ShaderDataType.Int:
                 case ShaderDataType.Int2:
@@ -75,6 +71,7 @@ public class VertexArray : IDisposable
                 case ShaderDataType.Int4:
                 {
                     GL.EnableVertexAttribArray((uint)_vertexBufferIndex);
+
                     GL.VertexAttribIPointer(
                         (uint)_vertexBufferIndex,
                         element.GetComponentCount(),
@@ -83,13 +80,15 @@ public class VertexArray : IDisposable
                         (IntPtr)element.Offset
                     );
                     _vertexBufferIndex++;
+
                     break;
                 }
-                
+
                 // Standard Floats/Vectors
                 default:
                 {
                     GL.EnableVertexAttribArray((uint)_vertexBufferIndex);
+
                     GL.VertexAttribPointer(
                         (uint)_vertexBufferIndex,
                         element.GetComponentCount(),
@@ -99,16 +98,17 @@ public class VertexArray : IDisposable
                         (IntPtr)element.Offset // Explicit cast to IntPtr is safer in OpenTK
                     );
                     _vertexBufferIndex++;
+
                     break;
                 }
             }
         }
 
+
         _vertexBuffers.Add(vertexBuffer);
     }
 
-    public void SetIndexBuffer(IndexBuffer indexBuffer)
-    {
+    public void SetIndexBuffer(IndexBuffer indexBuffer) {
         Bind();
         indexBuffer.Bind();
         _indexBuffer = indexBuffer;
@@ -116,15 +116,12 @@ public class VertexArray : IDisposable
 
     public IndexBuffer GetIndexBuffer => _indexBuffer;
 
-    public void Dispose()
-    {
+    public void Dispose() {
         GL.DeleteVertexArray(_rendererID);
     }
 
-    private static VertexAttribPointerType ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-    {
-        switch (type)
-        {
+    private static VertexAttribPointerType ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
+        switch (type) {
             case ShaderDataType.Float:
             case ShaderDataType.Float2:
             case ShaderDataType.Float3:
@@ -140,6 +137,8 @@ public class VertexArray : IDisposable
             case ShaderDataType.Bool:
                 return VertexAttribPointerType.UnsignedByte; // Usually safer for bools
         }
+
+
         return 0;
     }
 }

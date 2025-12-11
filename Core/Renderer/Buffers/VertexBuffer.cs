@@ -31,8 +31,8 @@ public class VertexBuffer : IDisposable {
 
     public void SetLayout(BufferLayout layout) => _layout = layout;
     public BufferLayout GetLayout() => _layout;
-    
-    
+
+
     public void Dispose() {
         GL.DeleteBuffer(_rendererID);
     }

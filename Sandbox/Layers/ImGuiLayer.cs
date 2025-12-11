@@ -2,6 +2,7 @@
 using Manifold.Core.Events;
 using Manifold.Core.Layers;
 using Manifold.Core.UI;
+using Manifold.Internal;
 using Manifold.Runtime;
 using Sandbox;
 
@@ -32,8 +33,9 @@ public class ImGuiLayer : Layer {
         if (ImGui.Checkbox("Show triangle layer", ref visible)) {
             Application.Instance.LayerStack.First().IsVisible = visible;
         }
+        ImGui.Text($"Total Meshes Rendered{Counter.VisibleRenderables}");
         ImGui.End();
-        
+        Counter.Reset();
         
     }
 
