@@ -5,6 +5,7 @@ using Manifold.Core.Renderer.Buffers;
 using Manifold.Core.Renderer.MaterialSystem;
 using Manifold.Core.Renderer.Shaders;
 using Manifold.Core.SceneSystem;
+using Manifold.Internal;
 using Manifold.Runtime;
 using OpenTK.Graphics.OpenGL.Compatibility;
 using OpenTK.Windowing.Common;
@@ -35,8 +36,8 @@ public class TestLayer : Layer {
     public override void OnAttach() {
         Application.Instance.OpenTKWindow.Resize += (args) => _target.Resize(args.Width, args.Height);
         RenderTargetSpec spec = new RenderTargetSpec();
-        spec.Width = Application.Instance.Width;
-        spec.Height = Application.Instance.Height;
+        spec.Width = (int)(Application.Instance.Width * DPI.X);
+        spec.Height = (int) (Application.Instance.Height * DPI.Y);
         spec.ColorAttachments = new[] { new RenderTargetAttachmentSpec() { Format = RenderTargetFormat.RGBA8 } };
         spec.HasDepth = true;
         _target = new RenderTarget(spec);

@@ -4,8 +4,10 @@ using Manifold.Core.Layers;
 using Manifold.Core.Renderer.Buffers;
 using Manifold.Core.Renderer.MaterialSystem;
 using Manifold.Core.Renderer.Shaders;
+using Manifold.Internal;
 using Manifold.Runtime;
 using OpenTK.Graphics.OpenGLES2;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Manifold.Core.Renderer.Debug.Layers;
 
@@ -41,8 +43,8 @@ public class DebugDrawLayer : Layer
             return;
         
         GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-        GL.Viewport(0, 0, Application.Instance.Width, Application.Instance.Height);
-
+        GL.Viewport(0, 0, (int)(Application.Instance.Width * DPI.X), (int)(Application.Instance.Height * DPI.Y));
+        
         GL.Disable(EnableCap.DepthTest);
         GL.DepthMask(false);
 

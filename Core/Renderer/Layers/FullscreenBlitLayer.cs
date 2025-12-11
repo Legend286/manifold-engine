@@ -3,6 +3,7 @@ using Manifold.Core.Renderer.Buffers;
 using Manifold.Core.Renderer.MaterialSystem;
 using Manifold.Core.Renderer.Shaders;
 using Manifold.Core.SceneSystem;
+using Manifold.Internal;
 using Manifold.Runtime;
 using OpenTK.Graphics.OpenGL;
 
@@ -59,7 +60,7 @@ public class FullscreenBlitLayer : Layer {
         GL.Disable(EnableCap.DepthTest);
         GL.Disable(EnableCap.CullFace);
         GL.Disable(EnableCap.ScissorTest);
-        GL.Viewport(0, 0, Application.Instance.Width, Application.Instance.Height);
+        GL.Viewport(0, 0, (int)(Application.Instance.Width * DPI.X), (int)(Application.Instance.Height * DPI.Y));
         
         _shader.Bind();
         

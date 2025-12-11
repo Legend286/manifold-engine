@@ -30,8 +30,8 @@ public class SandboxApp : Application {
         RenderTargetSpec spec = new RenderTargetSpec() {
             ColorAttachments = new[] { new RenderTargetAttachmentSpec() { Format = RenderTargetFormat.RGBA8 } },
             HasDepth = true,
-            Width = Application.Instance.Width,
-            Height = Application.Instance.Height,
+            Width = (int)(Application.Instance.Width * DPI.X),
+            Height = (int)(Application.Instance.Height * DPI.Y),
         };
         scene = new Scene();
         
