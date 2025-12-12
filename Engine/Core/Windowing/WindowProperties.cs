@@ -6,7 +6,7 @@ public struct WindowProperties {
     public int Height;
     public bool VSync;
 
-    public WindowProperties(string title = "Manifold Engine", int width = 1280, int height = 720, bool vsync = true) {
+    public WindowProperties(string title = "Engine Engine", int width = 1280, int height = 720, bool vsync = true) {
         Title = title;
         Width = width;
         Height = height;
