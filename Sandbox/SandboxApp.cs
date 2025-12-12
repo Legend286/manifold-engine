@@ -38,8 +38,8 @@ public class SandboxApp : Application {
         var target = new RenderTarget(spec);
         Application.Instance.OpenTKWindow.Resize += (ResizeEventArgs e) => target.Resize(e.Width, e.Height);
 
-        for (int i = -100; i <= 100; i++) {
-            for (int j = -100; j <= 100; j++) {
+        for (int i = -10; i <= 10; i++) {
+            for (int j = -10; j <= 10; j++) {
                 scene.AddRenderable(new Renderable(Mesh.Cube(), new Material(ShaderManager.Load("DebugModel")), new Transform() { Position = new Vector3(i*2, 0, j*2)}));
             }
         }

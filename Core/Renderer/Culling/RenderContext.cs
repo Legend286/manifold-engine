@@ -38,8 +38,8 @@ public sealed class RenderContext {
         if (_cullTask is { IsCompleted: false })
             return;
 
-        RenderSceneSnapshot snapshot = scene.GetCullSnapshot();
-        Matrix4 vp = camera.GetViewProjectionCulling(1.05f);
+        RenderSceneSnapshot snapshot = scene.BuildCullSnapshot();
+        Matrix4 vp = camera.GetViewProjectionCulling(1.0f);
 
         // Schedule async culling job
         _cullTask = Task.Run(() => { PerformCulling(snapshot, vp); });
