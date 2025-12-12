@@ -1,5 +1,4 @@
 ﻿using Manifold.Core.InputSystem;
-using Manifold.Core.Internal;
 using Manifold.Core.Renderer.Containers;
 using Manifold.Core.Renderer.Debug;
 using Manifold.Core.Renderer.Debug.Layers;
@@ -7,8 +6,9 @@ using Manifold.Core.Renderer.Layers;
 using Manifold.Core.Renderer.MaterialSystem;
 using Manifold.Core.Renderer.Modules;
 using Manifold.Core.Renderer.Shaders;
-using Manifold.Core.Runtime;
 using Manifold.Core.SceneSystem;
+using Manifold.Internal;
+using Manifold.Runtime;
 using Manifold.Sandbox.Layers;
 using OpenTK.Graphics.OpenGLES2;
 using OpenTK.Mathematics;
